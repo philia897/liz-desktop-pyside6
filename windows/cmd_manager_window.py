@@ -7,6 +7,7 @@ from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, QSortFilterProx
 from PySide6.QtGui import QAction
 from bluebird import *
 from windows.base import Shortcut
+from windows.signals import global_signal_bus
 
 class EditDialog(QDialog):
     def __init__(self, parent=None):
@@ -143,6 +144,8 @@ class ShortcutManager(QWidget):
         self.parent = parent
         self.flute = parent.flute
 
+        self.need_fetchall = False
+
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.on_close_callback = on_close_callback
         
@@ -152,6 +155,8 @@ class ShortcutManager(QWidget):
     def closeEvent(self, event):
         if self.on_close_callback:
             self.on_close_callback()
+        if self.need_fetchall:
+            global_signal_bus.fetchAll.emit()
         return super().closeEvent(event)
 
     def setup_table_view(self):
@@ -367,6 +372,7 @@ class ShortcutManager(QWidget):
             return
 
         self.model.modify_row(row, shortcut)
+        self.need_fetchall = True
 
     def save_new_command(self):
         app = self.edit_dialog.app_input.text()
@@ -414,6 +420,8 @@ class ShortcutManager(QWidget):
             return
         
         self.model.add_item(shortcut)
+        self.need_fetchall = True
+        self.update_counter()
 
     def get_ids_of_selected_rows(self):
         selected = self.table.selectionModel().selectedRows()
@@ -457,6 +465,8 @@ class ShortcutManager(QWidget):
                 self.model.beginRemoveRows(source_index.parent(), source_index.row(), source_index.row())
                 del self.model._data[source_index.row()]
                 self.model.endRemoveRows()
+            self.need_fetchall = True
+            self.update_counter()
     
     def export_selected_rows(self):
         
@@ -498,3 +508,5 @@ class ShortcutManager(QWidget):
             QMessageBox.critical(self, "Error", f"Failed to import shortcuts: {'; '.join(response.results)}")
         else:
             self.model.reset_data(self.fetch_shortcuts(""))
+            self.need_fetchall = True
+            self.update_counter()
