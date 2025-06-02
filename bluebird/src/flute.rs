@@ -492,7 +492,6 @@ impl Flute {
                 results: vec!["Empty args, expect one shortcut id".to_string()],
             };
         }
-        let fmt: String = self.rhythm.shortcut_print_fmt.clone();
         match self._execute(cmd.args[0].as_str()) {
             Ok(sc) => {
                 BlueBirdResponse {

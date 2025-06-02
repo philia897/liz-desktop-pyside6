@@ -6,6 +6,7 @@ from PySide6.QtGui import QPainter, QFont, QTextOption, QPainterPath
 from notifypy import Notify
 from rapidfuzz.fuzz import partial_ratio
 from bluebird import *
+from windows.signals import global_signal_bus
 
 import json
 from dataclasses import dataclass, field
@@ -73,6 +74,11 @@ class AppListModel(QAbstractListModel):
 
         return None
 
+    def reset_data(self, items: List[Shortcut]):
+        self.beginResetModel()
+        self._items = items
+        self.endResetModel()
+
 class AppFilterProxy(QSortFilterProxyModel):
     def __init__(self):
         super().__init__()
@@ -114,6 +120,8 @@ class MainWindow(QWidget):
         super().__init__(parent)
         self.parent = parent  # Reference to main window
         self.setup_ui()
+        self.setup_connections()
+        self.select_first_item()
         
     def fetch_data(self) -> List[Shortcut]:
         cmd = LizCommand(action="get_shortcut_details", args=[])
@@ -136,19 +144,12 @@ class MainWindow(QWidget):
         self.view.setModel(self.proxy)
         self.view.setItemDelegate(AppItemDelegate())
         self.view.setMouseTracking(True)
-        self.view.clicked.connect(self.on_item_clicked)
 
         self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy().ScrollBarAlwaysOff)
         self.view.setResizeMode(QListView.Adjust)  # Object inside to adjust to view's size
         self.view.setSelectionMode(QListView.SingleSelection)
         self.view.setSelectionBehavior(QListView.SelectRows)
         self.view.setFocusPolicy(Qt.StrongFocus)  # Enables keyboard focus
-
-        # Select the first item
-        if self.model.rowCount() > 0:
-            first_index = self.proxy.index(0, 0)
-            self.view.setCurrentIndex(first_index)
-        
 
     def setup_ui(self):
         # Layout
@@ -162,14 +163,38 @@ class MainWindow(QWidget):
         self.search_bar = QLineEdit(self)
         self.search_bar.setObjectName("searchbar")
         self.search_bar.setPlaceholderText("Typing to search...")
-        self.search_bar.textChanged.connect(self.proxy.setFilterString)
-        self.search_bar.installEventFilter(self)
         layout.addWidget(self.search_bar)
         
         # Application list
         layout.addWidget(self.view)
         
+    def setup_connections(self):
+        self.search_bar.textChanged.connect(self.proxy.setFilterString)
+        self.search_bar.installEventFilter(self)
+
+        self.view.clicked.connect(self.on_item_clicked)
+        self.view.doubleClicked.connect(self.on_item_doubleclicked)
+
+        global_signal_bus.aboutToHide.connect(self.handle_about_to_hide)
+        global_signal_bus.fetchAll.connect(self.handle_fetch_all)
+
+    def select_first_item(self):
+        # Select the first item
+        if self.model.rowCount() > 0:
+            first_index = self.proxy.index(0, 0)
+            self.view.setCurrentIndex(first_index)
+
+    def handle_about_to_hide(self):
+        self.search_bar.selectAll()
+        self.select_first_item()
+
+    def handle_fetch_all(self):
+        self.model.reset_data(self.fetch_data())
+
     def on_item_clicked(self, proxy_index):
+        self.view.setCurrentIndex(proxy_index)
+
+    def on_item_doubleclicked(self, proxy_index):
         source_index = self.proxy.mapToSource(proxy_index)
         item = self.model.data(source_index, Qt.UserRole)
 
@@ -186,7 +211,6 @@ class MainWindow(QWidget):
 
         if item:
             self.parent.hide()
-            self.search_bar.selectAll()
             QTimer.singleShot(0, lambda: play_command(self.proxy, item))
 
     def eventFilter(self, obj, event):
@@ -207,7 +231,7 @@ class MainWindow(QWidget):
 
             elif key in (Qt.Key_Return, Qt.Key_Enter):
                 # Optional: simulate click
-                self.on_item_clicked(self.view.currentIndex())
+                self.on_item_doubleclicked(self.view.currentIndex())
                 return True
 
         return super().eventFilter(obj, event)

@@ -5,6 +5,7 @@ from PySide6.QtCore import QTimer, QMetaObject, Qt
 from windows.main_window import MainWindow
 from windows.config_window import ConfigWindow
 from windows.cmd_manager_window import ShortcutManager
+from windows.signals import global_signal_bus
 from bluebird import Flute, LizCommand
 
 from pynput import keyboard
@@ -130,6 +131,10 @@ class LizDesktop(QMainWindow):
         self.flute.play(cmd)
         self.tray.hide()
         QApplication.quit()
+
+    def hide(self):
+        global_signal_bus.aboutToHide.emit()
+        super().hide()
 
     # Override close to hide instead of quit
     def closeEvent(self, event):
