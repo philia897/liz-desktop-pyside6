@@ -1,0 +1,65 @@
+/* General */
+* {
+    color: #0f172a;
+    background-color: #f8fafc;
+    border-radius: 20px;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    font-size: 14px;
+}
+
+/* QLineEdit (Search Bar) */
+QLineEdit {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 6px 10px;
+    border-radius: 8px;
+    color: #0f172a;
+}
+
+QLineEdit:focus {
+    border: 1px solid #0ea5e9;
+    background-color: #ffffff;
+}
+
+/* QListView */
+QListView {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 6px;
+    outline: none;
+}
+
+QListView::item {
+    background-color: transparent;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 2px;
+}
+
+QListView::item:selected {
+    background-color: #3b82f6;
+    color: #ffffff;
+}
+
+QListView::item:hover {
+    background-color: #e2e8f0;
+}
+
+/* Scrollbar */
+QScrollBar:vertical {
+    background: #f1f5f9;
+    width: 8px;
+    margin: 2px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0;
+}
