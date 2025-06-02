@@ -1,4 +1,6 @@
 import sys
+import os
+from pathlib import Path
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QSystemTrayIcon, QMenu, QVBoxLayout
 from PySide6.QtGui import QIcon, QKeySequence, QAction
 from PySide6.QtCore import QTimer, QMetaObject, Qt
@@ -10,6 +12,17 @@ from bluebird import Flute, LizCommand
 
 from pynput import keyboard
 import threading
+
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    if hasattr(sys, '_MEIPASS'):
+        # Running in PyInstaller bundle
+        base_path = Path(sys._MEIPASS)
+    else:
+        # Running in development
+        base_path = Path(__file__).parent
+    
+    return str(base_path / relative_path)
 
 class LizDesktop(QMainWindow):
     def __init__(self):
@@ -87,12 +100,12 @@ class LizDesktop(QMainWindow):
         return True  # Implement proper detection for your OS
             
     def apply_theme(self, mode):
-        with open(f"theme/{mode}.qss", "r") as f:
+        with open(resource_path(f"theme/{mode}.qss"), "r") as f:
             self.setStyleSheet(f.read())
         
     def setup_tray(self):
         # Create tray icon
-        self.tray = QSystemTrayIcon(QIcon("assets/icon_1024.png"), self)
+        self.tray = QSystemTrayIcon(QIcon(resource_path("resources/icon_1024.png")), self)
         self.tray.setToolTip("Liz Shortcut Helper")
         
         # Create tray menu
