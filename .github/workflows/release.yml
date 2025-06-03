@@ -45,6 +45,7 @@ jobs:
           pip install "$wheel" --force-reinstall
 
       - name: Run PyInstaller
+        shell: bash
         run: |
           pyinstaller \
             --add-data "theme:theme" \
