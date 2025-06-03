@@ -19,11 +19,9 @@ jobs:
           python-version: '3.10'
 
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: actions-rs/toolchain@v1.0.6
         with:
           toolchain: stable
-          # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Install Maturin
         run: pip install maturin
