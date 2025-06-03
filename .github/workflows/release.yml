@@ -36,7 +36,13 @@ jobs:
         working-directory: ./bluebird
         run: |
           maturin build --release --strip --interpreter python
-          pip install target/wheels/bluebird-*.whl --force-reinstall
+
+      - name: Install built bluebird wheel
+        working-directory: ./bluebird
+        shell: bash
+        run: |
+          wheel=$(ls target/wheels/*.whl | head -n 1)
+          pip install "$wheel" --force-reinstall
 
       - name: Run PyInstaller
         run: |
