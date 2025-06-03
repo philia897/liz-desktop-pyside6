@@ -18,13 +18,12 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Rust (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions-rs/toolchain@v1
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
           toolchain: stable
-          override: true
+          targets: x86_64-unknown-linux-gnu  # For Linux
+          # For Windows, it will automatically detect the target
 
       - name: Install Rust (Windows)
         if: matrix.os == 'windows-latest'
