@@ -25,12 +25,12 @@ def resource_path(relative_path):
     return str(base_path / relative_path)
 
 class LizDesktop(QMainWindow):
-    def __init__(self):
+    def __init__(self, flute:Flute):
         super().__init__()
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Window)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
-        self.flute: Flute = Flute.create_flute(None)
+        self.flute: Flute = flute
 
         # Desired size
         width = 700
@@ -170,31 +170,35 @@ class LizDesktop(QMainWindow):
 
 # Global shortcut handler using pynput
 def listen_for_shortcut(app_window):
-    COMBO = {keyboard.Key.ctrl, keyboard.Key.alt, keyboard.KeyCode(char='l')}
-    current_keys = set()
+    COMBO = keyboard.HotKey.parse('<ctrl>+<alt>+l')
 
-    def on_press(key):
-        current_keys.add(key)
-        if all(k in current_keys for k in COMBO):
-            print("Hotkey triggered")
+    def on_activate():
+        print("Hotkey triggered")
 
-            # Safely invoke show from the Qt event loop
-            QMetaObject.invokeMethod(
-                window,
-                "show_main",  # this should be a slot or method
-                Qt.QueuedConnection
-            )
+        # Safely invoke show from the Qt event loop
+        QMetaObject.invokeMethod(
+            window,
+            "show_main",  # this should be a slot or method
+            Qt.QueuedConnection
+        )
 
-    def on_release(key):
-        current_keys.discard(key)
+    hotkey = keyboard.HotKey(
+        COMBO,
+        on_activate)
 
-    with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+    def for_canonical(f):
+        return lambda k: f(listener.canonical(k))
+
+    with keyboard.Listener(on_press=for_canonical(hotkey.press), on_release=for_canonical(hotkey.release)) as listener:
         listener.join()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False) 
-    window = LizDesktop()
+
+    flute = Flute.create_flute(None)
+
+    window = LizDesktop(flute)
     window.show()
 
     # Launch the global shortcut listener in a separate thread
