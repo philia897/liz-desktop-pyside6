@@ -14,3 +14,10 @@ class Shortcut:
     def __post_init__(self):
         # Precompute and cache the lowercased searchable text
         self.searchable_text = f"{self.shortcut} {self.application} {self.description}".lower()
+
+
+@dataclass
+class RhythmItem:
+    name: str
+    value: str
+    hint: str

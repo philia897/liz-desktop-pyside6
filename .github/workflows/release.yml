@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
       - name: install dependencies (ubuntu only)
         if: matrix.os == 'ubuntu-latest' # This must match the platform value defined above.
@@ -30,7 +30,7 @@ jobs:
           toolchain: stable
 
       - name: Install python dependencies
-        run: pip install maturin pynput pyinstaller rapidfuzz PySide6 notify-py python-dotenv
+        run: pip install -r requirements.txt
 
       - name: Build Rust module
         working-directory: ./bluebird

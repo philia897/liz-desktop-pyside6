@@ -25,7 +25,7 @@ def resource_path(relative_path):
     return str(base_path / relative_path)
 
 class LizDesktop(QMainWindow):
-    def __init__(self, flute:Flute):
+    def __init__(self, flute:Flute, icon_file:str):
         super().__init__()
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Window)
         self.setAttribute(Qt.WA_TranslucentBackground)
@@ -41,7 +41,7 @@ class LizDesktop(QMainWindow):
         self.load_theme()
         
         # Setup tray icon
-        self.setup_tray()
+        self.setup_tray(icon_file)
 
         # Track window focus
         self.installEventFilter(self)
@@ -69,7 +69,8 @@ class LizDesktop(QMainWindow):
 
     def open_config(self):
         if self.config_window is None:
-            self.config_window = ConfigWindow(on_close_callback=self.on_config_closed)
+            self.config_window = ConfigWindow(self, self.flute,
+                            on_close_callback=self.on_config_closed)
             self.config_window.show()
             self.config_window.raise_()
             self.config_window.activateWindow()
@@ -103,9 +104,9 @@ class LizDesktop(QMainWindow):
         with open(resource_path(f"theme/{mode}.qss"), "r") as f:
             self.setStyleSheet(f.read())
         
-    def setup_tray(self):
+    def setup_tray(self, icon_file):
         # Create tray icon
-        self.tray = QSystemTrayIcon(QIcon(resource_path("resources/icon_1024.png")), self)
+        self.tray = QSystemTrayIcon(QIcon(icon_file), self)
         self.tray.setToolTip("Liz Shortcut Helper")
         
         # Create tray menu
@@ -196,9 +197,12 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False) 
 
+    icon_file = resource_path("resources/icon_1024.png")
+    app.setWindowIcon(QIcon(icon_file))
+
     flute = Flute.create_flute(None)
 
-    window = LizDesktop(flute)
+    window = LizDesktop(flute, icon_file)
     window.show()
 
     # Launch the global shortcut listener in a separate thread

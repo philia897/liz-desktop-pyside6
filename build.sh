@@ -8,6 +8,9 @@ set -e
 # Store the root directory
 ROOT_DIR=$(pwd)
 
+# Install python dependencies
+pip install -r requirements.txt
+
 echo "=== Building Rust module ==="
 cd bluebird || { echo "Error: bluebird directory not found"; exit 1; }
 
