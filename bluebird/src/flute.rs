@@ -161,9 +161,13 @@ impl Flute {
         Ok(flute)
     }
 
+    pub fn get_trigger_hotkey(&self) -> String {
+        return self.rhythm.trigger_shortcut.clone();
+    }
+
     pub fn play(&mut self, cmd: &LizCommand) -> BlueBirdResponse {
         match cmd.action.as_str() {
-            "get_shortcuts" => self.command_get_shortcuts(cmd),
+            // "get_shortcuts" => self.command_get_shortcuts(cmd),
             // "reload" => self.command_reload(cmd),
             "execute" => self.command_execute(cmd),
             "persist" => self.command_persist(cmd),
@@ -277,25 +281,25 @@ impl Flute {
         }
     }
 
-    fn command_get_shortcuts(&self, cmd: &LizCommand) -> BlueBirdResponse {
-        let fmt = &self.rhythm.shortcut_print_fmt;
-        let shortcuts = if cmd.args.is_empty() {
-            self.music_sheet.retrieve_all()
-        } else {
-            self.music_sheet.fuzzy_search(&cmd.args[0])
-        };
-        let sc_vec: Vec<String> = shortcuts
-            .into_iter()
-            .map(|sc| {
-                // Create a JSON string
-                sc.to_json_string_simple(fmt)
-            })
-            .collect();
-        BlueBirdResponse {
-            code: StateCode::OK,
-            results: sc_vec,
-        }
-    }
+    // fn command_get_shortcuts(&self, cmd: &LizCommand) -> BlueBirdResponse {
+    //     let fmt = &self.rhythm.shortcut_print_fmt;
+    //     let shortcuts = if cmd.args.is_empty() {
+    //         self.music_sheet.retrieve_all()
+    //     } else {
+    //         self.music_sheet.fuzzy_search(&cmd.args[0])
+    //     };
+    //     let sc_vec: Vec<String> = shortcuts
+    //         .into_iter()
+    //         .map(|sc| {
+    //             // Create a JSON string
+    //             sc.to_json_string_simple(fmt)
+    //         })
+    //         .collect();
+    //     BlueBirdResponse {
+    //         code: StateCode::OK,
+    //         results: sc_vec,
+    //     }
+    // }
 
     fn command_get_shortcut_details(&self, cmd: &LizCommand) -> BlueBirdResponse {
         let shortcuts = if cmd.args.is_empty() {

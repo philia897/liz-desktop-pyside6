@@ -15,8 +15,8 @@ pub struct Rhythm {
     pub keymap_path: String,      // Can be used to customize key mapping
     pub interval_ms: u64,         // interval of each shortcut block. No need to set it normally.
     pub trigger_shortcut: String, // The shortcut to activate Liz
-    pub shortcut_print_fmt: String, // The format to show one shortcut
-    pub language: String,    // The Application Language
+    // pub shortcut_print_fmt: String, // The format to show one shortcut
+    // pub language: String,    // The Application Language
 }
 
 impl Default for Rhythm {
@@ -30,8 +30,8 @@ impl Default for Rhythm {
         let music_sheet_path: String = format!("{}/music_sheet.lock", liz_path);
         let keymap_path: String = format!("");
         let trigger_shortcut: String = "Ctrl+Alt+L".to_string();
-        let shortcut_print_fmt: String =
-            "<b>#description</b> | #application | #shortcut".to_string();
+        // let shortcut_print_fmt: String =
+        //     "<b>#description</b> | #application | #shortcut".to_string();
 
         Self {
             liz_path,
@@ -40,8 +40,8 @@ impl Default for Rhythm {
             keymap_path,
             interval_ms: 100,
             trigger_shortcut,
-            shortcut_print_fmt,
-            language: format!("en"),
+            // shortcut_print_fmt,
+            // language: format!("en"),
         }
     }
 }
@@ -60,14 +60,14 @@ pub fn parse_rhythm(json_str: &str) -> Result<Rhythm, Box<dyn std::error::Error>
 impl Rhythm {
     pub fn to_string_list(&self) -> Vec<String> {
         vec![
-            json!({"name": "language", "value": self.language, "hint": "The Application Language (Support zh, en)"}).to_string(),
+            // json!({"name": "language", "value": self.language, "hint": "The Application Language (Support zh, en)"}).to_string(),
             json!({"name": "liz_path", "value": self.liz_path, "hint": "The path of data dir"}).to_string(),
             // json!({"name": "user_sheets_path", "value": self.user_sheets_path, "hint": "Path for all the shortcut sheets"}).to_string(),
             json!({"name": "music_sheet_path", "value": self.music_sheet_path, "hint": "Path for the lock file for Bluebird"}).to_string(),
             json!({"name": "keymap_path", "value": self.keymap_path, "hint": "Can be used to customize key mapping"}).to_string(),
             json!({"name": "interval_ms", "value": self.interval_ms, "hint": "Interval of each shortcut block. No need to set it normally."}).to_string(),
             json!({"name": "trigger_shortcut", "value": self.trigger_shortcut, "hint": "The shortcut to activate Liz"}).to_string(),
-            json!({"name": "shortcut_print_fmt", "value": self.shortcut_print_fmt, "hint": "The format to show one shortcut"}).to_string(),
+            // json!({"name": "shortcut_print_fmt", "value": self.shortcut_print_fmt, "hint": "The format to show one shortcut"}).to_string(),
         ]
     }
 

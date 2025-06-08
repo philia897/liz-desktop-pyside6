@@ -27,10 +27,5 @@
 
 # Shortcut key to trigger a specific action
 # The keyboard shortcut used to trigger `Show` in Liz. 
-# Default is "Ctrl+Alt+L"
-#trigger_shortcut = "Ctrl+Alt+L"
-
-# The format to show one shortcut
-# Shortcut in Liz will be shown in the defined format, can be customized via html style
-# Default is "<b>#description</b> | #application | #shortcut"
-#shortcut_print_fmt = "<b>#description</b> | #application | #shortcut"
+# Default is "<Ctrl>+<Alt>+L"
+#trigger_shortcut = "<Ctrl>+<Alt>+L"

@@ -137,6 +137,7 @@ class LizDesktop(QMainWindow):
 
     def show_main(self):
         self.show()
+        self.main_window.activateWindow()
         self.activateWindow()
         self.raise_()
 
@@ -170,8 +171,8 @@ class LizDesktop(QMainWindow):
             self.hide()
 
 # Global shortcut handler using pynput
-def listen_for_shortcut(app_window):
-    COMBO = keyboard.HotKey.parse('<ctrl>+<alt>+l')
+def listen_for_shortcut(app_window, hotkey:str):
+    COMBO = keyboard.HotKey.parse(hotkey)
 
     def on_activate():
         print("Hotkey triggered")
@@ -206,7 +207,8 @@ if __name__ == "__main__":
     window.show()
 
     # Launch the global shortcut listener in a separate thread
-    listener_thread = threading.Thread(target=listen_for_shortcut, args=(window,), daemon=True)
+    listener_thread = threading.Thread(target=listen_for_shortcut, args=(window,flute.get_trigger_hotkey(),), daemon=True)
     listener_thread.start()
+
 
     sys.exit(app.exec())
