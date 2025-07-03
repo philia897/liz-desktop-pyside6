@@ -13,6 +13,44 @@ from bluebird import Flute, LizCommand
 from pynput import keyboard
 import threading
 
+from datetime import datetime
+
+class UnbufferedStream:
+    def __init__(self, stream):
+        self.stream = stream
+    
+    def write(self, data):
+        self.stream.write(data)
+        self.stream.flush()  # Force immediate write
+    
+    def __getattr__(self, attr):
+        return getattr(self.stream, attr)
+
+def setup_logging():
+    # Get the directory where the executable is running
+    if getattr(sys, 'frozen', False):
+        # Running in PyInstaller bundle
+        app_dir = Path(sys.executable).parent
+    else:
+        # Running in normal Python
+        app_dir = Path(__file__).parent
+    
+    log_path = app_dir / "liz_runtime.log"
+    
+    # Clear previous log file and open in write mode
+    with open(log_path, 'w') as f:
+        f.write("")  # Clear the file
+    
+    # Reopen in append mode and redirect stdout/stderr
+    log_file = open(log_path, 'a', encoding='utf-8')
+    sys.stdout = UnbufferedStream(log_file)
+    sys.stderr = UnbufferedStream(log_file)
+    
+    # Print initial info
+    print(f"=== Application started at {datetime.now()} ===")
+    print(f"Working directory: {app_dir}")
+    print(f"Log file: {log_path}\n")
+
 def resource_path(relative_path):
     """Get absolute path to resource, works for dev and for PyInstaller"""
     if hasattr(sys, '_MEIPASS'):
@@ -195,6 +233,8 @@ def listen_for_shortcut(app_window, hotkey:str):
         listener.join()
 
 if __name__ == "__main__":
+    setup_logging()
+
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False) 
 
