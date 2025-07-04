@@ -29,7 +29,7 @@ impl Default for Rhythm {
         // let user_sheets_path: String = format!("{}/sheets", liz_path);
         let music_sheet_path: String = format!("{}/music_sheet.lock", liz_path);
         let keymap_path: String = format!("");
-        let trigger_shortcut: String = "Ctrl+Alt+L".to_string();
+        let trigger_shortcut: String = "<Ctrl>+<Alt>+L".to_string();
         // let shortcut_print_fmt: String =
         //     "<b>#description</b> | #application | #shortcut".to_string();
 
