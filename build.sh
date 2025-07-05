@@ -40,6 +40,7 @@ pyinstaller \
     --name Liz-desktop \
     --onefile \
     --windowed \
+    --icon "resources\icon_1024.png" \
     --clean \
     main.py
 
