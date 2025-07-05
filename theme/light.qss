@@ -3,7 +3,7 @@
     color: #0f172a;
     background-color: #f8fafc;
     border-radius: 20px;
-    font-family: 'Segoe UI', 'Arial', sans-serif;
+    /* font-family: 'Segoe UI', 'Arial', sans-serif; */
     font-size: 14px;
 }
 

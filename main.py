@@ -128,19 +128,35 @@ class LizDesktop(QMainWindow):
         self.shortcut_manager_window = None
 
     def load_theme(self):
-        """Toggle between light/dark mode based on system preference"""
-        if self.is_dark_mode():
-            self.apply_theme("dark")
-        else:
-            self.apply_theme("light")
-            
-    def is_dark_mode(self):
-        """Detect system dark mode (simplified)"""
-        return True  # Implement proper detection for your OS
+        self.apply_theme(self.flute.get_theme())
             
     def apply_theme(self, mode):
-        with open(resource_path(f"theme/{mode}.qss"), "r") as f:
-            self.setStyleSheet(f.read())
+        """Apply the specified theme with file validation"""
+        try:
+            valid_modes = ["dark", "light"]  # Add other valid modes if needed
+            if mode not in valid_modes:
+                raise ValueError(f"Invalid theme mode: {mode}")
+            
+            theme_path = resource_path(f"theme/{mode}.qss")
+
+            if not os.path.exists(theme_path):
+                raise FileNotFoundError(f"Theme file not found: {theme_path}")
+                
+            # Verify file is readable
+            if not os.access(theme_path, os.R_OK):
+                raise PermissionError(f"Cannot read theme file: {theme_path}")
+
+            with open(theme_path, "r") as f:
+                self.setStyleSheet(f.read())
+                
+        except Exception as e:
+            # Show error to user but continue with dark theme
+            error_msg = f"Failed to apply theme '{mode}': {str(e)}\n\nUsing dark theme as fallback."
+            print(error_msg)
+            
+            # Fallback to dark theme
+            if mode != "dark":  # Prevent infinite recursion
+                self.apply_theme("dark")
         
     def setup_tray(self, icon_file):
         # Create tray icon

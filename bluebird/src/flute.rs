@@ -165,6 +165,10 @@ impl Flute {
         return self.rhythm.trigger_shortcut.clone();
     }
 
+    pub fn get_theme(&self) -> String {
+        return self.rhythm.theme.clone();
+    }
+
     pub fn play(&mut self, cmd: &LizCommand) -> BlueBirdResponse {
         match cmd.action.as_str() {
             // "get_shortcuts" => self.command_get_shortcuts(cmd),

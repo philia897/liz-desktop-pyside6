@@ -2,7 +2,7 @@
 * {
     color: #f1f5f9;
     background-color: #0f172a;
-    font-family: 'Segoe UI', 'Arial', sans-serif;
+    /* font-family: 'Segoe UI', 'Arial', sans-serif; */
     font-size: 14px;
 }
 
