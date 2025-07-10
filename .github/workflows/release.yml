@@ -50,7 +50,7 @@ jobs:
           pyinstaller \
             --add-data "theme:theme" \
             --add-data "resources:resources" \
-            --name Liz-desktop \
+            --name liz-desktop \
             --onefile \
             --windowed \
             --icon "resources\icon_1024.png" \
@@ -60,7 +60,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Liz-desktop-${{ matrix.os }}
+          name: liz-desktop-${{ matrix.os }}
           path: |
             dist/
             !dist/*.spec

@@ -37,7 +37,7 @@ echo "=== Running PyInstaller ==="
 pyinstaller \
     --add-data "theme:theme" \
     --add-data "resources:resources" \
-    --name Liz-desktop \
+    --name liz-desktop \
     --onefile \
     --windowed \
     --icon "resources\icon_1024.png" \
@@ -45,4 +45,4 @@ pyinstaller \
     main.py
 
 echo "=== Build complete ==="
-echo "Executable created at: $ROOT_DIR/dist/Liz-desktop"
+echo "Executable created at: $ROOT_DIR/dist/liz-desktop"
